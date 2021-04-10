@@ -23,4 +23,15 @@ export class ProductService {
     }
     return { ...product };
   }
+
+  updateProd(id: string, title: string, desc: string, price: number) {
+    const prodIndex = this.products.findIndex((prod) => prod.id === id);
+    if (prodIndex < 0) {
+      throw new NotFoundException();
+    }
+    let product = this.products[prodIndex];
+    product = { ...product, title, desc, price };
+    this.products[prodIndex] = product;
+    return product;
+  }
 }
