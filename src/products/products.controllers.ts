@@ -11,10 +11,11 @@ export class ProductController {
     @Body('description') prodDescription: string,
     @Body('price') prorPrice: number,
   ): any {
-    return this.productsService.insertProduct(
+    const genereated_product_id: string = this.productsService.insertProduct(
       prodTitle,
       prodDescription,
       prorPrice,
     );
+    return { id: genereated_product_id };
   }
 }
