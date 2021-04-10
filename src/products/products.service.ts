@@ -42,4 +42,12 @@ export class ProductService {
     this.products[prodIndex] = product;
     return product;
   }
+
+  deleteProduct(prodId: string) {
+    this.products = this.products.filter((prod) => prod.id !== prodId);
+    return {
+      prod: [...this.products],
+      message: 'Succesfully deleted the product',
+    };
+  }
 }
