@@ -23,4 +23,9 @@ export class ProductController {
   getProducts() {
     return this.productsService.getProducts();
   }
+
+  @Get('/:id')
+  getProduct(@Param('id') prodId: string) {
+    return this.productsService.getProduct(prodId);
+  }
 }
