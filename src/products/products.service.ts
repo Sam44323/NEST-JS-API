@@ -29,8 +29,16 @@ export class ProductService {
     if (prodIndex < 0) {
       throw new NotFoundException();
     }
-    let product = this.products[prodIndex];
-    product = { ...product, title, desc, price };
+    const product = this.products[prodIndex];
+    if (title) {
+      product.title = title;
+    }
+    if (desc) {
+      product.desc = desc;
+    }
+    if (price) {
+      product.price = price;
+    }
     this.products[prodIndex] = product;
     return product;
   }
