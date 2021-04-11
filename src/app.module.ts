@@ -1,10 +1,17 @@
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ProductModule } from './products/products.module';
 
 @Module({
-  imports: [ProductModule], // the imported modules for handling all the other routes
+  imports: [
+    ProductModule,
+    MongooseModule.forRoot(
+      'mongodb+srv://admin-suranjan:admin-suranjan@cluster0.hzfia.mongodb.net/NESTJS?retryWrites=true&w=majority',
+    ),
+  ], // the imported modules for handling all the other routes
   controllers: [AppController],
   providers: [AppService],
 })
