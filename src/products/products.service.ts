@@ -1,53 +1,74 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Product } from './product.model';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class ProductService {
-  private products: Product[] = [];
+  constructor(
+    @InjectModel('Product') private readonly productModel: Model<Product>,
+  ) {}
 
   insertProduct(title: string, desc: string, price: number) {
-    const prodId = new Date().toISOString();
-    const prod: Product = new Product(prodId, title, desc, price);
-    this.products.push(prod);
-    return prodId;
+    const prod: Product = new this.productModel({
+      title,
+      description: desc,
+      price,
+    });
+    return prod
+      .save()
+      .then((prod) => prod)
+      .catch(() => {
+        throw new NotFoundException();
+      });
   }
 
   getProducts() {
-    return [...this.products];
+    return this.productModel
+      .find()
+      .then((prod) => prod)
+      .catch(() => {
+        throw new NotFoundException();
+      });
   }
 
   getProduct(prodId: string) {
-    const product = this.products.find((prod) => prod.id === prodId);
-    if (!product) {
-      throw new NotFoundException();
-    }
-    return { ...product };
+    return this.productModel
+      .findById(prodId)
+      .then((prod) => prod)
+      .catch(() => {
+        throw new NotFoundException();
+      });
   }
 
   updateProd(id: string, title: string, desc: string, price: number) {
-    const prodIndex = this.products.findIndex((prod) => prod.id === id);
-    if (prodIndex < 0) {
-      throw new NotFoundException();
-    }
-    const product = this.products[prodIndex];
-    if (title) {
-      product.title = title;
-    }
-    if (desc) {
-      product.desc = desc;
-    }
-    if (price) {
-      product.price = price;
-    }
-    this.products[prodIndex] = product;
-    return product;
+    return this.productModel
+      .findById(id)
+      .then((product) => {
+        if (title) {
+          product.title = title;
+        }
+        if (desc) {
+          product.desc = desc;
+        }
+        if (price) {
+          product.price = price;
+        }
+        return product.save();
+      })
+      .then(() => ({
+        message: 'Updated the product',
+      }))
+      .catch(() => {
+        throw new NotFoundException();
+      });
   }
-
   deleteProduct(prodId: string) {
-    this.products = this.products.filter((prod) => prod.id !== prodId);
-    return {
-      prod: [...this.products],
-      message: 'Succesfully deleted the product',
-    };
+    return this.productModel
+      .findByIdAndDelete(prodId)
+      .then(() => ({ message: 'Deleted the product!' }))
+      .catch(() => {
+        throw new NotFoundException();
+      });
   }
 }

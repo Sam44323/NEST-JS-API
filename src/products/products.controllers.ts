@@ -19,12 +19,11 @@ export class ProductController {
     @Body('description') prodDescription: string,
     @Body('price') prorPrice: number,
   ): any {
-    const genereated_product_id: string = this.productsService.insertProduct(
+    return this.productsService.insertProduct(
       prodTitle,
       prodDescription,
       prorPrice,
     );
-    return { id: genereated_product_id };
   }
 
   @Get()
@@ -44,18 +43,11 @@ export class ProductController {
     @Body('description') desc: string,
     @Body('price') price: number,
   ) {
-    const Updated_Product = this.productsService.updateProd(
-      prodId,
-      prodTitle,
-      desc,
-      price,
-    );
-    return { updatedProd: Updated_Product };
+    return this.productsService.updateProd(prodId, prodTitle, desc, price);
   }
 
   @Delete('/:id')
   deleteProduct(@Param('id') prodId: string) {
-    const delete_Prod_Response = this.productsService.deleteProduct(prodId);
-    return delete_Prod_Response;
+    return this.productsService.deleteProduct(prodId);
   }
 }

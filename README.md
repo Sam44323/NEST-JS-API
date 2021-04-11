@@ -8,9 +8,6 @@
 
 - Typescript
 - Nest.JS
-
-_In progess_
-
 - MongoDB
 - Mongoose
 

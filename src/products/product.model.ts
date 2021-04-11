@@ -1,4 +1,4 @@
-import { Schema } from 'mongoose';
+import { Schema, Document } from 'mongoose';
 
 export const ProductSchema = new Schema({
   title: {
@@ -15,11 +15,8 @@ export const ProductSchema = new Schema({
   },
 });
 
-export class Product {
-  constructor(
-    public id: string,
-    public title: string,
-    public desc: string,
-    public price: number,
-  ) {}
+export interface Product extends Document {
+  title: string;
+  desc: string;
+  price: number;
 }
