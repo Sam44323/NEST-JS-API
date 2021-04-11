@@ -9,66 +9,62 @@ export class ProductService {
     @InjectModel('Product') private readonly productModel: Model<Product>,
   ) {}
 
-  insertProduct(title: string, desc: string, price: number) {
-    const prod: Product = new this.productModel({
+  async insertProduct(title: string, desc: string, price: number) {
+    let prod: Product = new this.productModel({
       title,
       description: desc,
       price,
     });
-    return prod
-      .save()
-      .then((prod) => prod)
-      .catch(() => {
-        throw new NotFoundException();
-      });
+    try {
+      prod = await prod.save();
+      return prod;
+    } catch (error) {
+      throw new NotFoundException();
+    }
   }
 
-  getProducts() {
-    return this.productModel
-      .find()
-      .then((prod) => prod)
-      .catch(() => {
-        throw new NotFoundException();
-      });
+  async getProducts() {
+    try {
+      const prods: Product[] = await this.productModel.find();
+      return [...prods];
+    } catch (error) {
+      throw new NotFoundException();
+    }
   }
 
-  getProduct(prodId: string) {
-    return this.productModel
-      .findById(prodId)
-      .then((prod) => prod)
-      .catch(() => {
-        throw new NotFoundException();
-      });
+  async getProduct(prodId: string) {
+    try {
+      const prod: Product = await this.productModel.findById(prodId);
+      return { ...prod };
+    } catch (error) {
+      throw new NotFoundException();
+    }
   }
 
-  updateProd(id: string, title: string, desc: string, price: number) {
-    return this.productModel
-      .findById(id)
-      .then((product) => {
-        if (title) {
-          product.title = title;
-        }
-        if (desc) {
-          product.desc = desc;
-        }
-        if (price) {
-          product.price = price;
-        }
-        return product.save();
-      })
-      .then(() => ({
-        message: 'Updated the product',
-      }))
-      .catch(() => {
-        throw new NotFoundException();
-      });
+  async updateProd(id: string, title: string, desc: string, price: number) {
+    try {
+      let product: Product = await this.productModel.findById(id);
+      if (title) {
+        product.title = title;
+      }
+      if (desc) {
+        product.desc = desc;
+      }
+      if (price) {
+        product.price = price;
+      }
+      product = await product.save();
+      return { message: 'Updated the product', product };
+    } catch (error) {
+      throw new NotFoundException();
+    }
   }
-  deleteProduct(prodId: string) {
-    return this.productModel
-      .findByIdAndDelete(prodId)
-      .then(() => ({ message: 'Deleted the product!' }))
-      .catch(() => {
-        throw new NotFoundException();
-      });
+  async deleteProduct(prodId: string) {
+    try {
+      await this.productModel.findByIdAndDelete(prodId);
+      return { message: 'Deleted the product!' };
+    } catch (error) {
+      throw new NotFoundException();
+    }
   }
 }
