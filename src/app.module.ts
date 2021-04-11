@@ -18,5 +18,5 @@ import { ProductModule } from './products/products.module';
 export class AppModule {}
 
 /* 
-This means that when that(same for all the other modules files) when the app is loaded, nest.js will create an instance based on this class and will decorate the objects based on the decorator
+This means that when that(same for all the other modules files) when the app is loaded, nest.js will create an instance based on this class and will decorate the objects based on the decorator specified
 */
